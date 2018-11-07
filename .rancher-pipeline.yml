@@ -1,0 +1,19 @@
+stages:
+- name: yarn build
+  steps:
+  - runScriptConfig:
+      image: node:latest
+      shellScript: yarn build
+- name: docker build&publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: b2b/antd-pro-vue:${CICD_EXECUTION_ID}
+      pushRemote: true
+      registry: 192.168.144.144
+- name: deploy workload
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
+timeout: 60
